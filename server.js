@@ -88,7 +88,6 @@ app.put("/updateCamera/:id", (req, res) => {
 app.delete("/deleteCamera/:id", (req, res) => {
     const cameraId = req.params.id;
     const sql = "DELETE FROM camera WHERE id = ?";
-
     db.query(sql, cameraId, (err, result) => {
         if (err) {
             console.error("Database error:", err);
