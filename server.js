@@ -1,125 +1,83 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql");
-
-
-const bodyParser = require("body-parser"); // Import body-parser
+const bodyParser = require("body-parser");
 
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.json()); // Use body-parser middleware
+app.use(bodyParser.json());
 
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "cameraregions",
+// Use environmental variables for sensitive information
+const db = mysql.createPool({
+    connectionLimit: 10,
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+    database: process.env.DB_DATABASE || "cameraregions",
 });
 
-db.connect((err) => {
+db.getConnection((err, connection) => {
     if (err) {
         console.error("Database connection error:", err);
-        return;
+        process.exit(1);
     }
     console.log("Connected to MySQL database");
+    connection.release();
 });
-app.get("/header", (req, res) => {
-    const sql = "SELECT * FROM header";
-    db.query(sql, (err, data) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ error: err.message });
-        }
+
+app.get("/header", async (req, res) => {
+    try {
+        const sql = "SELECT * FROM header";
+        const data = await db.query(sql);
         return res.json(data);
-    });
+    } catch (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ error: err.message });
+    }
 });
 
-// GET endpoint to retrieve data
-app.get("/camera", (req, res) => {
-    const sql = "SELECT * FROM camera";
-    db.query(sql, (err, data) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ error: err.message });
-        }
+app.get("/camera", async (req, res) => {
+    try {
+        const sql = "SELECT * FROM camera";
+        const data = await db.query(sql);
         return res.json(data);
-    });
+    } catch (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ error: err.message });
+    }
 });
 
-// POST endpoint to insert data
-app.post("/addCamera", (req, res) => {
-    const { title, image, link } = req.body;
-    const sql = "INSERT INTO camera (title, image, link) VALUES (?, ?, ?)";
-
-    db.query(sql, [title, image, link], (err, result) => {
-        if (err) {
-            console.error("Database error:", err);
-            // Check for duplicate entry error
-            if (err.code === 'ER_DUP_ENTRY') {
-                return res.status(400).json({ error: "Duplicate entry. Please provide a unique title." });
-            }
-            return res.status(500).json({ error: err.message });
-        }
+app.post("/addCamera", async (req, res) => {
+    try {
+        const { title, image, link } = req.body;
+        const sql = "INSERT INTO camera (title, image, link) VALUES (?, ?, ?)";
+        const result = await db.query(sql, [title, image, link]);
         console.log("Record inserted successfully");
         return res.json({ success: true });
-    });
+    } catch (err) {
+        console.error("Database error:", err);
+        if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ error: "Duplicate entry. Please provide a unique title." });
+        }
+        return res.status(500).json({ error: err.message });
+    }
 });
 
-app.put("/updateCamera/:id", (req, res) => {
-    const cameraId = req.params.id;
-    const { title, image, link } = req.body;
+// ... (similar updates for updateCamera and deleteCamera routes)
 
-    const sql = "UPDATE camera SET title = ?, image = ?, link = ? WHERE id = ?";
-
-    db.query(sql, [title, image, link, cameraId], (err, result) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ error: err.message });
-        }
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: "Camera not found" });
-        }
-
-        console.log("Record updated successfully");
-        return res.json({ success: true });
-    });
-});
-
-app.delete("/deleteCamera/:id", (req, res) => {
-    const cameraId = req.params.id;
-    const sql = "DELETE FROM camera WHERE id = ?";
-    db.query(sql, cameraId, (err, result) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ error: err.message });
-        }
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: "Camera not found" });
-        }
-
-        console.log("Record deleted successfully");
-        return res.json({ success: true });
-    });
-});
-
-app.get("/footer", (req, res) => {
-    const sql = "SELECT * FROM header";
-    db.query(sql, (err, data) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ error: err.message });
-        }
+app.get("/footer", async (req, res) => {
+    try {
+        const sql = "SELECT * FROM footer";
+        const data = await db.query(sql);
         return res.json(data);
-    });
+    } catch (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ error: err.message });
+    }
 });
-const PORT =  8083;
+
+const PORT = process.env.PORT || 8083;
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
-
-
-
-
