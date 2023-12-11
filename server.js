@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql");
+
+
 const bodyParser = require("body-parser"); // Import body-parser
 
 const app = express();
@@ -113,7 +115,11 @@ app.get("/footer", (req, res) => {
         return res.json(data);
     });
 });
-const PORT = 8081;
+const PORT =  8083;
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
+
+
+
+
