@@ -14,9 +14,8 @@ const pool = mysql.createPool({
     host: 'localhost',
     port_db: 3306,
     user: 'root',
-    password: 'Admin123',
+    password: 'Admin123456',
     database: 'cameraregions',
-    PORT :8083,
     acquireTimeout: 60000
 });
 pool.getConnection((err,conn) => {
