@@ -11,11 +11,11 @@ app.use(cors());
 
 const pool = mysql.createPool({
     connectionLimit: 10,
-    host: 'localhost',
-    port_db: 3306,
-    user: 'root',
-    password: 'Admin123456',
-    database: 'cameraregions',
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE,
     acquireTimeout: 60000
 });
 pool.getConnection((err,conn) => {
@@ -111,7 +111,7 @@ app.get("/footer", (req, res) => {
     });
 });
 
-const PORT =  8083;
+const PORT = process.env.PORT || 8083;
 app.listen(PORT, (err) => {
     if (err) {
         console.error(`Error starting the server: ${err.message}`);
