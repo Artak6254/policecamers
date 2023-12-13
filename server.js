@@ -12,10 +12,11 @@ app.use(cors());
 const pool = mysql.createPool({
     connectionLimit: 10,
     host: 'localhost',
-    port: 3306,
+    port_db: 3306,
     user: 'root',
     password: 'Admin123',
     database: 'cameraregions',
+    PORT :8083,
     acquireTimeout: 60000
 });
 pool.getConnection((err,conn) => {
@@ -111,7 +112,7 @@ app.get("/footer", (req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 8083;
+const PORT =  8083;
 app.listen(PORT, (err) => {
     if (err) {
         console.error(`Error starting the server: ${err.message}`);
