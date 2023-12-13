@@ -116,6 +116,6 @@ app.listen(PORT, (err) => {
     if (err) {
         console.error(`Error starting the server: ${err.message}`);
     } else {
-        console.log(`Server listening on port ${PORT}`);
+        console.log(`Server listening on port http://localhost:${PORT}`);
     }
 });
