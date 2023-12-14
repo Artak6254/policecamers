@@ -2,7 +2,7 @@
 
 export const headerData = async () => {
   try {
-    const response = await fetch("http://localhost:8081/header",{
+    const response = await fetch("http://localhost:8801/header",{
       cache:"no-cache"
     })
     const data = await response.json();
@@ -15,7 +15,7 @@ export const headerData = async () => {
 
 export const regions = async () => {
     try {
-        const response = await fetch("http://localhost:8081/camera",{
+        const response = await fetch("http://localhost:8801/camera",{
           cache:"no-cache"
         })
         const data = await response.json()

@@ -28,7 +28,7 @@ const Admin = () => {
   const handleDelete = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8081/deleteCamera/${id}`,
+        ` http://localhost:8801/deleteCamera/${id}`,
         {
           method: "DELETE",
         }
@@ -50,7 +50,7 @@ const Admin = () => {
       const updatedImage = document.getElementById(`editedImage_${id}`).value;
 
       const response = await fetch(
-        `http://localhost:8081/updateCamera/${id}`,
+        ` http://localhost:8801/updateCamera/${id}`,
         {
           method: "PUT",
           headers: {
