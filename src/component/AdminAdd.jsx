@@ -19,7 +19,7 @@ const navigate = useNavigate();
       }
     
     try {
-      const response = await fetch('http://localhost:8801/addCamera', {
+      const response = await fetch('http://10.111.111.212:8801/addCamera', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

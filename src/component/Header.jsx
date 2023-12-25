@@ -2,7 +2,8 @@ import React from 'react';
 
 const Header = ({ headData,searchText, setSearchText }) => {
   return (
-    <div className="bg-yellow-700 w-full fixed top-0 z-50">
+    <div className="">
+      <div className="bg-yellow-700 bg-yellow-700 w-full fixed top-0 z-50">
       <div className="max-w-[1100px] mx-auto flex justify-between items-center">
         {headData &&
           headData.map((el) => (
@@ -25,6 +26,7 @@ const Header = ({ headData,searchText, setSearchText }) => {
             className="p-1 rounded-md w-[200px]"
           />
         </div>
+      </div>
       </div>
     </div>
   );

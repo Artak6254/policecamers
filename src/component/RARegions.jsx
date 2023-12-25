@@ -10,11 +10,11 @@ const RARegions = ({ filteredRegions }) => {
     <div className="bg-slate-100 w-full h-auto">
       <div className="max-w-[1400px] mx-auto py-[6rem] ">
         <div className="grid lg:grid-cols-10 md:grid-cols-4 place-content-center sm:grid-cols-2 grid-cols-1 gap-x-2 gap-y-4 transition-all ease-linear duration-500">
-          {filteredRegions.map((el) => (
+          {filteredRegions.map((el,index) => (
+            <div key={`${el.id}`}>
             <Link
               to={`${el.link}`}
               target="_blank"
-              key={el.id}
               className="flex flex-col items-center rounded-full"
             >
               <img
@@ -25,6 +25,10 @@ const RARegions = ({ filteredRegions }) => {
               />
               <p>{el?.title}</p>
             </Link>
+            <Link to={`person/${el.id}`}>
+              <img src="../../images/person.png" alt="person" />
+              </Link>
+            </div>
           ))}
         </div>
       </div>

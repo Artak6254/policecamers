@@ -6,6 +6,7 @@ import { headerData } from "../api/Api"
 import { regions } from "../api/Api"
 
 
+
 const HomePage = () => {
     const [headData, setHeadData] = useState([]);
     const [region, setRegion] = useState([]);
@@ -16,6 +17,7 @@ const HomePage = () => {
       headerData().then((res) => setHeadData(res));
       regions().then((res) => setRegion(res));
     }, []);
+
 
 
 

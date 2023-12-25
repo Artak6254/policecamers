@@ -15,6 +15,7 @@ const Admin = () => {
     id: null,
     title: "",
     image: "",
+    link: ""
   });
 
   const itemsPerPage = 10;
@@ -28,7 +29,7 @@ const Admin = () => {
   const handleDelete = async (id) => {
     try {
       const response = await fetch(
-        ` http://localhost:8801/deleteCamera/${id}`,
+        ` http://10.111.111.212:8801/deleteCamera/${id}`,
         {
           method: "DELETE",
         }
@@ -48,9 +49,10 @@ const Admin = () => {
     try {
       const updatedTitle = document.getElementById(`editedTitle_${id}`).value;
       const updatedImage = document.getElementById(`editedImage_${id}`).value;
+      const updatedLink = document.getElementById(`editedLink_${id}`).value;
 
       const response = await fetch(
-        ` http://localhost:8801/updateCamera/${id}`,
+        ` http://10.111.111.212:8801/updateCamera/${id}`,
         {
           method: "PUT",
           headers: {
@@ -59,6 +61,7 @@ const Admin = () => {
           body: JSON.stringify({
             title: updatedTitle,
             image: updatedImage,
+            link: updatedLink
           }),
         }
       );
@@ -67,13 +70,13 @@ const Admin = () => {
         setAdminData((prevData) =>
           prevData.map((item) =>
             item.id === id
-              ? { ...item, title: updatedTitle, image: updatedImage }
+              ? { ...item, title: updatedTitle, image: updatedImage, link: updatedLink }
               : item
           )
         );
 
         console.log(`Item with ID ${id} updated successfully`);
-        setEditedData({ id: null, title: "", image: "" });
+        setEditedData({ id: null, title: "", image: "", link:"" });
       } else {
         console.error(`Failed to update item with ID ${id}`);
       }
@@ -101,14 +104,14 @@ const Admin = () => {
         <table className="w-full bg-white font-[sans-serif]">
           <tbody className="whitespace-nowrap">
             {currentItems.map((el) => (
-              <EditableRow
-                key={el.id}
-                data={el}
-                isEditing={editedData.id === el.id}
-                onEdit={() => setEditedData({ id: el.id, title: el.title, image: el.image })}
-                onUpdate={() => handleUpdate(el.id)}
-                onDelete={handleDelete}
-              />
+           <EditableRow
+           key={el.id}
+           data={el}
+           isEditing={editedData.id === el.id}
+           onEdit={(id, title, image, link) => setEditedData({ id, title, image, link })}
+           onUpdate={() => handleUpdate(el.id)}
+           onDelete={handleDelete}
+         />
             ))}
           </tbody>
         </table>

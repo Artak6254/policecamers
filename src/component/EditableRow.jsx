@@ -4,6 +4,8 @@ import React from "react";
 const EditableRow = ({ data, isEditing, onEdit, onUpdate, onDelete }) => {
   const [editedTitle, setEditedTitle] = React.useState(data.title);
   const [editedImage, setEditedImage] = React.useState(data.image);
+  const [editedLink, setEditedLink] = React.useState(data.link);
+  console.log(editedLink);
   const [ , setUpdateVisible] = React.useState(false);
   const handleTitleChange = (e) => {
     setEditedTitle(e.target.value);  
@@ -11,6 +13,10 @@ const EditableRow = ({ data, isEditing, onEdit, onUpdate, onDelete }) => {
   };
   const handleImageChange = (e) => {
     setEditedImage(e.target.value)
+     setUpdateVisible(false);
+  }
+  const handleLinkChange = (e) => {
+    setEditedLink(e.target.value)
      setUpdateVisible(false);
   }
 
@@ -34,6 +40,14 @@ const EditableRow = ({ data, isEditing, onEdit, onUpdate, onDelete }) => {
               onChange={handleImageChange}
               className="border rounded px-2 py-1"
             />
+              <input
+              type="text"
+              id={`editedLink_${data.id}`}
+              value={editedLink}
+              onChange={handleLinkChange}
+              placeholder="set url"
+              className="border rounded px-2 py-1"
+            />
           </div>
         ) : (
           <div className="flex justify-around items-center cursor-pointer">
@@ -51,13 +65,13 @@ const EditableRow = ({ data, isEditing, onEdit, onUpdate, onDelete }) => {
 
       <td className="px-6 py-3 text-right">
         <div className="flex items-center justify-end">
-          <button
+        <button
             className="mr-4 flex items-center justify-end cursor-pointer"
             title="Edit"
             onClick={() => {
-                onEdit(data.id, editedTitle, editedImage);
-                setUpdateVisible(false);
-              }}
+              onEdit(data.id, editedTitle, editedImage, editedLink);
+              setUpdateVisible(false);
+            }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
