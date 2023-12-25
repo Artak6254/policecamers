@@ -43,7 +43,23 @@ app.get("/camera", (req, res) => {
         return res.json(data);
     });
 });
+app.get("/camera/:id", (req, res) => {
+    const cameraId = req.params.id;
+    const sql = "SELECT * FROM camera WHERE id = ?";
+    
+    pool.query(sql, [cameraId], (err, data) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: err.message });
+        }
 
+        if (data.length === 0) {
+            return res.status(404).json({ error: "Camera not found" });
+        }
+
+        return res.json(data[0]); // Assuming you expect only one result
+    });
+});
 app.post("/addCamera", (req, res) => {
     const { title, image, link } = req.body;
     const sql = "INSERT INTO camera (title, image, link) VALUES (?, ?, ?)";
@@ -100,6 +116,73 @@ app.delete("/deleteCamera/:id", (req, res) => {
     });
 });
 
+app.get("/renderexel", (req, res) => {
+    const sql = "SELECT * FROM renderexel";
+    pool.query(sql, (err, data) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: err.message });
+        }
+        return res.json(data);
+    });
+});
+app.post("/addPerson", (req, res) => {
+    const { name, surname } = req.body;
+    const sql = "INSERT INTO renderexel (name, surname) VALUES (?, ?)";
+
+    pool.query(sql, [name, surname], (err, result) => {
+        if (err) {
+            console.error("Database error:", err);
+            if (err.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ error: "Duplicate entry. Please provide a unique title." });
+            }
+            return res.status(500).json({ error: err.message });
+        }
+        console.log("Record inserted successfully");
+        return res.json({ success: true });
+    });
+});
+
+app.put("/person/:id", (req, res) => {
+    const cameraId = req.params.id;
+    const { name, surname } = req.body;
+
+    const sql = "UPDATE renderexel SET name = ?, surname = ? WHERE id = ?";
+
+    pool.query(sql, [name, surname, cameraId], (err, result) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: err.message });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Camera not found" });
+        }
+
+        console.log("Record updated successfully");
+        return res.json({ success: true });
+    });
+});
+
+app.delete("/deletePerson/:id", (req, res) =>{
+    const cameraId = req.params.id;
+    const sql = "DELETE FROM renderexel WHERE id = ?";
+    pool.query(sql, cameraId, (err, result) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: err.message });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "preson not found" });
+        }
+
+        console.log("Record deleted successfully");
+        return res.json({ success: true });
+    });
+});
+
+
 app.get("/footer", (req, res) => {
     const sql = "SELECT * FROM footer";
     pool.query(sql, (err, data) => {
@@ -111,11 +194,13 @@ app.get("/footer", (req, res) => {
     });
 });
 
+
+
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, (err) => {
     if (err) {
         console.error(`Error starting the server: ${err.message}`);
     } else {
-        console.log(`Server listening on port http://localhost:${PORT}`);
+        console.log(`Server listening on port ${process.env.DB_HOST}:${PORT}`);
     }
 });
